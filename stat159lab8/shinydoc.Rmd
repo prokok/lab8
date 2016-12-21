@@ -1,0 +1,50 @@
+---
+title: "Untitled"
+author: "PHILHOON OH"
+date: "October 13, 2016"
+output: html_document
+runtime: shiny
+---
+
+#Shiny Document
+
+```{r echo=FALSE, message=FALSE}
+  library(ggplot2)
+  library(babynames)
+```
+
+```{r echo=FALSE}
+textInput(inputId = "myname", label="Write a name", value = "John")
+```
+
+
+```{r echo=FALSE}
+#subset babynames
+names = reactive(subset(babynames, name == input$myname))
+```
+
+```{r echo=FALSE}
+# graph of the number of people named 'myname'
+# think names() as a function because it is rendering object.
+renderPlot(
+  ggplot(data = names(), aes(x = year, y = n)) +
+  geom_line(aes(color = sex), size = 1) + 
+  theme_bw()
+)
+```
+
+
+-----
+
+##More information
+
+The name `r renderText(input$myname)` was more popular in `r renderText(names()$year[which.max(names()$n)])`
+
+So far, `r renderText(sum(names()$n))` people have the named `r renderText(input$myname)`
+
+##Table
+
+```{r echo=FALSE}
+renderTable(summary(names()))
+```
+
